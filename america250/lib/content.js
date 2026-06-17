@@ -189,6 +189,12 @@ export const FUN_FACTS = {
 
 // Bracket matchups — one per day
 export const BRACKET_MATCHUPS = {
+  '2026-06-17': {
+    question: 'Greatest Kansas staple?',
+    optionA: 'Sunflowers',
+    optionB: 'Wheat Fields',
+    emoji: { A: '🌻', B: '🌾' },
+  },
   '2026-06-29': {
     question: 'Greatest American summer food?',
     optionA: 'Hamburgers',
@@ -223,6 +229,13 @@ export const BRACKET_MATCHUPS = {
 
 // State quiz — one per day
 export const STATE_QUESTIONS = {
+  '2026-06-17': {
+    state: 'Kansas',
+    hint: 'Home to the geographic center of the contiguous U.S., endless wheat fields, and PHC!',
+    options: ['Nebraska', 'Missouri', 'Kansas', 'Oklahoma'],
+    correct: 'Kansas',
+    funFact: 'Kansas is the Sunflower State and home to Patterson Health Center — serving Harper County since 1910!',
+  },
   '2026-06-29': {
     state: 'Kansas',
     hint: 'Home to the Sunflower State, the geographic center of the contiguous U.S., and... us!',
@@ -262,6 +275,10 @@ export const STATE_QUESTIONS = {
 
 // Caption contest scenarios — one per day
 export const CAPTION_CONTESTS = {
+  '2026-06-17': {
+    scenario: 'A tumbleweed has rolled through the front entrance of PHC and is now sitting in the waiting room. It has been there for 20 minutes. Nobody has moved it. A patient just asked it if it needs help checking in.',
+    closes: '2026-06-17T23:59:00',
+  },
   '2026-06-29': {
     scenario: 'A bald eagle has landed on the roof of the hospital and is staring through the emergency department window with intense suspicion. The ED staff are staring back. Nobody is sure who should make the first move.',
     closes: '2026-06-29T23:59:00',
