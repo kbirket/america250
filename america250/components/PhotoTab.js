@@ -75,7 +75,7 @@ export default function PhotoTab({ member, email, onToast }) {
     setSubmitting(false)
   }
 
-  const votingClosed = new Date() > new Date('2026-07-04T00:00:00')
+  const votingClosed = new Date() > new Date('2026-07-06T12:00:00')
 
   if (loading) return <div className="loading">Loading photo contest...</div>
 
@@ -171,7 +171,7 @@ export default function PhotoTab({ member, email, onToast }) {
 
       {votingClosed && (
         <div className="info-box" style={{ marginBottom: 10 }}>
-          Voting is closed. People's Choice winner announced July 3!
+          Voting is closed. People's Choice winner announced July 6!
         </div>
       )}
 
