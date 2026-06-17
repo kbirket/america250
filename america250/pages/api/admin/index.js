@@ -41,7 +41,7 @@ export default async function handler(req, res) {
       if (!photoId || !['approved', 'rejected'].includes(status)) {
         return res.status(400).json({ error: 'Invalid request.' })
       }
-      await updatePhotoStatus(photoId, status)
+      await updatePhotoStatus(photoId, status, photoUrl)
       return res.status(200).json({ success: true })
     }
 
