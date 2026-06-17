@@ -177,8 +177,8 @@ export const FUN_FACTS = {
     fact: 'During the Civil War, Clara Barton nursed wounded soldiers on the battlefield and was known as the "Angel of the Battlefield." She later founded the American Red Cross in 1881.',
     source: 'America 250 · Healthcare Edition',
   },
-  '2026-07-02': {
-    fact: 'Kansas has more Critical Access Hospitals per capita than almost any other state — keeping rural communities like ours healthy since the program launched in 1997. PHC is proud to be one of them!',
+'2026-07-02': {
+    fact: 'Kansas has more Critical Access Hospitals per capita than almost any other state — keeping rural communities like ours healthy since the program launched in 1997. PHC is proud to be one of them! Happy Costume Day! 🎉',
     source: 'America 250 · Healthcare Edition',
   },
   '2026-07-03': {
@@ -323,18 +323,18 @@ export const SPIRIT_WEEK = [
     description: 'Wear your regular clothes but go wild with the headwear and accessories. The bigger, the better.',
     icon: 'ti-hat',
   },
-  {
+ {
     date: '2026-07-02',
     day: 'Thursday',
-    theme: 'Vintage Americana / Denim & Flannel Day',
-    description: 'Lumberjack, cowboy, farmstead — channel your inner heartland American. Denim encouraged!',
-    icon: 'ti-shirt',
+    theme: 'Stars & Stripes Everything — Full Costume Day!',
+    description: 'The grand finale! Go ALL out with your most patriotic costume. People\'s Choice voting closes Monday July 6 at noon!',
+    icon: 'ti-star',
   },
   {
     date: '2026-07-03',
     day: 'Friday',
-    theme: 'Stars & Stripes Everything — Full Costume Day!',
-    description: 'The grand finale. Go ALL out. Full patriotic costume encouraged. People\'s Choice winner announced today!',
-    icon: 'ti-star',
+    theme: 'America 250 Celebration Day!',
+    description: 'Whether you\'re at PHC or celebrating this weekend, share a patriotic photo — cookout, fireworks, family, or your PHC pride. Submissions open through Sunday July 5!',
+    icon: 'ti-confetti',
   },
 ]
