@@ -48,12 +48,11 @@ export default function TriviaTab({ member, onToast }) {
     }))
     setSubmitting(null)
 
-    if (result.correct) {
-      onToast('✓ Correct! +1 prize entry earned')
+  if (result.correct) {
+      onToast(result.isPractice ? '✓ Correct! (Practice round — no entries yet)' : '✓ Correct! +1 prize entry earned')
     } else {
       onToast('Not quite — keep going!')
     }
-
     const updated = await fetch('/api/trivia/today').then(r => r.json())
     setData(updated)
   }
