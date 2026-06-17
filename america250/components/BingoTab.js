@@ -76,6 +76,7 @@ export default function BingoTab({ member, onToast }) {
 
   return (
     <>
+      {/* Screen reader live region for announcements */}
       <div
         ref={announceRef}
         aria-live="assertive"
@@ -95,7 +96,7 @@ export default function BingoTab({ member, onToast }) {
       <div
         className="bingo-grid"
         role="group"
-        aria-label="Bingo board, 5 by 5 grid. Use Tab to move between squares and Enter or Space to mark them. Use arrow keys to navigate."
+        aria-label="Bingo board — 5 by 5 grid. Use Tab to move between squares and Enter or Space to mark them."
       >
         {squares.map((text, idx) => {
           const isFree = idx === 12
@@ -120,6 +121,7 @@ export default function BingoTab({ member, onToast }) {
                   e.preventDefault()
                   toggleCell(idx)
                 }
+                // Arrow key navigation
                 if (e.key === 'ArrowRight' && idx % 5 < 4) document.querySelectorAll('.bingo-cell')[idx + 1]?.focus()
                 if (e.key === 'ArrowLeft' && idx % 5 > 0) document.querySelectorAll('.bingo-cell')[idx - 1]?.focus()
                 if (e.key === 'ArrowDown' && idx < 20) document.querySelectorAll('.bingo-cell')[idx + 5]?.focus()
@@ -132,7 +134,7 @@ export default function BingoTab({ member, onToast }) {
         })}
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginBottom: 12 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginBottom: 12 }} role="status" aria-label={`You have marked ${markedCount} of 24 squares. ${bingoCount > 0 ? 'You have bingo and earned 3 entries.' : ''} ${blackout ? 'You have a blackout and earned 10 bonus entries.' : ''}`}>
         <div className="card" style={{ padding: '10px', textAlign: 'center' }}>
           <div style={{ fontSize: 18, fontWeight: 700, color: '#002868' }}>{markedCount}</div>
           <div style={{ fontSize: 10, color: '#9a9a9a' }}>squares marked</div>
@@ -152,7 +154,7 @@ export default function BingoTab({ member, onToast }) {
       </div>
 
       <div className="info-box" role="note">
-        <strong>How it works:</strong> Tap squares as you complete them. Your board is unique to you — no two employees have the same layout. Complete a row, column, or diagonal for +3 entries. Fill the whole board for +10 bonus entries! Use Tab and arrow keys to navigate, Enter or Space to mark squares.
+        <strong>How it works:</strong> Tap squares as you complete them. Your board is unique to you — no two employees have the same layout. Complete a row, column, or diagonal for +3 entries. Fill the whole board for +10 bonus entries! Use Tab to move between squares, and Enter or Space to mark them.
       </div>
 
       <p style={{ fontSize: 11, color: '#9a9a9a', textAlign: 'center', marginTop: 8 }} aria-live="polite">

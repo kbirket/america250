@@ -50,3 +50,6 @@ export default async function handler(req, res) {
 
   return res.status(405).end()
 }
+
+
+// Caption winner selection (append to existing handler via separate export)

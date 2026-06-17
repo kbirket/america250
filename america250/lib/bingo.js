@@ -41,7 +41,7 @@ export const BINGO_SQUARES = [
   'Named the document that starts "We the People"',
   'Brought in a patriotic treat for the team',
   'Participated every day of spirit week',
-  'Wore face paint or patriotic makeup',
+  'Wore patriotic socks or shoes',
   'Named all 13 original colonies',
   'Hosted or joined a trivia session',
   'Submitted a photo to the contest',

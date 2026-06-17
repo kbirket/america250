@@ -1,23 +1,31 @@
 import { useState, useEffect } from 'react'
 import Head from 'next/head'
 import TriviaTab from '../components/TriviaTab'
+import BracketTab from '../components/BracketTab'
+import StateTab from '../components/StateTab'
 import SpiritTab from '../components/SpiritTab'
 import BingoTab from '../components/BingoTab'
 import PhotoTab from '../components/PhotoTab'
+import CaptionTab from '../components/CaptionTab'
 import LeaderboardTab from '../components/LeaderboardTab'
 import LoginScreen from '../components/LoginScreen'
 import ProfileSetup from '../components/ProfileSetup'
+import WelcomeSplash from '../components/WelcomeSplash'
 
 const TABS = [
   { id: 'trivia', label: 'Trivia', icon: 'ti-bulb' },
+  { id: 'bracket', label: 'Bracket', icon: 'ti-podium' },
+  { id: 'state', label: 'State', icon: 'ti-map' },
   { id: 'spirit', label: 'Spirit', icon: 'ti-shirt' },
   { id: 'bingo', label: 'Bingo', icon: 'ti-grid-pattern' },
   { id: 'photos', label: 'Photos', icon: 'ti-camera' },
+  { id: 'caption', label: 'Caption', icon: 'ti-pencil' },
   { id: 'prizes', label: 'Prizes', icon: 'ti-trophy' },
 ]
 
 export default function Home() {
-  const [authState, setAuthState] = useState('loading') // loading | unauthenticated | new-user | authenticated
+  const [authState, setAuthState] = useState('loading')
+  const [showWelcome, setShowWelcome] = useState(false)
   const [activeTab, setActiveTab] = useState('trivia')
   const [member, setMember] = useState(null)
   const [email, setEmail] = useState(null)
@@ -58,6 +66,7 @@ export default function Home() {
 
   function handleProfileCreated(memberData) {
     setMember(memberData)
+    setShowWelcome(true)
     setAuthState('authenticated')
   }
 
@@ -81,15 +90,11 @@ export default function Home() {
     )
   }
 
-  if (authState === 'unauthenticated') {
-    return <LoginScreen onSuccess={handleLoginSuccess} />
-  }
+  if (authState === 'unauthenticated') return <LoginScreen onSuccess={handleLoginSuccess} />
+  if (authState === 'new-user') return <ProfileSetup email={email} onComplete={handleProfileCreated} />
+  if (showWelcome) return <WelcomeSplash member={member} onDone={() => setShowWelcome(false)} />
 
-  if (authState === 'new-user') {
-    return <ProfileSetup email={email} onComplete={handleProfileCreated} />
-  }
-
-  const isAdmin = email === 'info@pattersonhc.org'
+  const isAdmin = email === (process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'info@pattersonhc.org')
 
   return (
     <>
@@ -117,14 +122,17 @@ export default function Home() {
 
         <div className="tab-content">
           {activeTab === 'trivia' && <TriviaTab member={member} onToast={showToast} />}
+          {activeTab === 'bracket' && <BracketTab member={member} onToast={showToast} />}
+          {activeTab === 'state' && <StateTab member={member} onToast={showToast} />}
           {activeTab === 'spirit' && <SpiritTab member={member} onToast={showToast} />}
           {activeTab === 'bingo' && <BingoTab member={member} onToast={showToast} />}
           {activeTab === 'photos' && <PhotoTab member={member} email={email} onToast={showToast} />}
+          {activeTab === 'caption' && <CaptionTab member={member} email={email} onToast={showToast} />}
           {activeTab === 'prizes' && <LeaderboardTab email={email} onToast={showToast} />}
         </div>
 
         {isAdmin && (
-          <div style={{ padding: '8px 16px 16px', borderTop: '1px solid #e0e0e0' }}>
+          <div style={{ padding: '8px 16px 4px', borderTop: '1px solid #e0e0e0' }}>
             <a href="/admin" style={{ fontSize: 12, color: '#9a9a9a', display: 'flex', alignItems: 'center', gap: 4 }}>
               <i className="ti ti-settings" style={{ fontSize: 14 }} aria-hidden="true" />
               Admin panel
@@ -132,14 +140,11 @@ export default function Home() {
           </div>
         )}
 
-        <div style={{ padding: '8px 16px 12px', borderTop: '1px solid #e0e0e0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ padding: '8px 16px 12px', borderTop: isAdmin ? 'none' : '1px solid #e0e0e0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span style={{ fontSize: 11, color: '#9a9a9a' }}>
             {member?.Name} · {member?.Location}
           </span>
-          <button
-            onClick={handleSignOut}
-            style={{ fontSize: 11, color: '#9a9a9a', background: 'none', border: 'none', cursor: 'pointer' }}
-          >
+          <button onClick={handleSignOut} style={{ fontSize: 11, color: '#9a9a9a', background: 'none', border: 'none', cursor: 'pointer' }}>
             Sign out
           </button>
         </div>
@@ -150,7 +155,7 @@ export default function Home() {
             background: '#002868', color: 'white', padding: '10px 20px',
             borderRadius: 20, fontSize: 13, fontWeight: 500, zIndex: 999,
             whiteSpace: 'nowrap', boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
-          }}>
+          }} role="alert" aria-live="polite">
             {toastMsg}
           </div>
         )}
