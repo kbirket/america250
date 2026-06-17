@@ -302,8 +302,8 @@ export const CAPTION_CONTESTS = {
 }
 
 export const SPIRIT_WEEK = [
-  {
-    date: '2026-06-29',
+ {
+    date: '2026-06-17',
     day: 'Monday',
     theme: 'Red, White & Blue Day',
     description: 'The classic opener! Wear your patriotic colors — any combination of red, white, and blue counts.',
@@ -321,7 +321,7 @@ export const SPIRIT_WEEK = [
     day: 'Wednesday',
     theme: 'Patriotic Hats & Accessories Day',
     description: 'Wear your regular clothes but go wild with the headwear and accessories. The bigger, the better.',
-    icon: 'ti-hat',
+    icon: 'ti-top-hat',
   },
  {
     date: '2026-07-02',
