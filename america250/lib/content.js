@@ -321,7 +321,7 @@ export const SPIRIT_WEEK = [
     day: 'Wednesday',
     theme: 'Patriotic Hats & Accessories Day',
     description: 'Wear your regular clothes but go wild with the headwear and accessories. The bigger, the better.',
-    icon: 'ti-top-hat',
+    icon: 'ti-sunglasses',
   },
  {
     date: '2026-07-02',
