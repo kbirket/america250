@@ -60,8 +60,8 @@ export default function TriviaTab({ member, onToast }) {
   if (loading) return <div className="loading">Loading today's questions...</div>
 
   const entries = member?.EntriesTotal || 0
-  const isEventOver = new Date() > new Date('2026-07-04T00:00:00')
-  const isEventPre = new Date() < new Date('2026-06-29T00:00:00')
+ const isEventOver = new Date() > new Date('2026-07-04T00:00:00')
+  const isEventPre = false
   const todayLabel = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
 
   return (
