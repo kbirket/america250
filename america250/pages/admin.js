@@ -37,12 +37,12 @@ export default function AdminPage() {
     setLoading(false)
   }
 
-  async function handlePhotoAction(photoId, status) {
+ async function handlePhotoAction(photoId, status, photoUrl = '') {
     setActionLoading(photoId)
     await fetch('/api/admin', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'update-photo-status', photoId, status }),
+      body: JSON.stringify({ action: 'update-photo-status', photoId, status, photoUrl }),
     })
     setPhotos(p => p.filter(ph => ph.id !== photoId))
     setActionLoading(null)
@@ -136,16 +136,34 @@ export default function AdminPage() {
                     <div style={{ fontSize: 10, color: '#9a9a9a', marginTop: 2 }}>
                       {photo.MemberEmail} · {new Date(photo.SubmittedAt).toLocaleDateString()}
                     </div>
-                    {view === 'pending' && (
-                      <div style={{ display: 'flex', gap: 6, marginTop: 10 }}>
-                        <button onClick={() => handlePhotoAction(photo.id, 'approved')} disabled={actionLoading === photo.id}
-                          style={{ flex: 1, padding: '7px', border: 'none', borderRadius: 6, background: '#2d7a3a', color: 'white', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
-                          ✓ Approve
-                        </button>
-                        <button onClick={() => handlePhotoAction(photo.id, 'rejected')} disabled={actionLoading === photo.id}
-                          style={{ flex: 1, padding: '7px', border: '1px solid #e0e0e0', borderRadius: 6, background: 'white', color: '#a32d2d', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
-                          ✗ Reject
-                        </button>
+                   {view === 'pending' && (
+                      <div style={{ marginTop: 10 }}>
+                        <input
+                          type="url"
+                          placeholder="Paste JotForm photo URL before approving..."
+                          id={`url-${photo.id}`}
+                          style={{
+                            width: '100%', padding: '7px 10px', border: '1px solid #e0e0e0',
+                            borderRadius: 6, fontSize: 12, marginBottom: 6,
+                          }}
+                        />
+                        <div style={{ display: 'flex', gap: 6 }}>
+                          <button
+                            onClick={() => {
+                              const url = document.getElementById(`url-${photo.id}`)?.value || ''
+                              handlePhotoAction(photo.id, 'approved', url)
+                            }}
+                            disabled={actionLoading === photo.id}
+                            style={{ flex: 1, padding: '7px', border: 'none', borderRadius: 6, background: '#2d7a3a', color: 'white', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+                            ✓ Approve
+                          </button>
+                          <button
+                            onClick={() => handlePhotoAction(photo.id, 'rejected', '')}
+                            disabled={actionLoading === photo.id}
+                            style={{ flex: 1, padding: '7px', border: '1px solid #e0e0e0', borderRadius: 6, background: 'white', color: '#a32d2d', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+                            ✗ Reject
+                          </button>
+                        </div>
                       </div>
                     )}
                   </div>
