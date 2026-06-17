@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { SPIRIT_WEEK } from '../lib/content'
+import SpiritGallery from './SpiritGallery'
 
 export default function SpiritTab({ member, onToast }) {
   const [submittedDates, setSubmittedDates] = useState([])
@@ -124,6 +125,8 @@ export default function SpiritTab({ member, onToast }) {
         <i className="ti ti-star" style={{ verticalAlign: -2, marginRight: 4 }} aria-hidden="true" />
         Submit a photo each day for up to +5 bonus entries across the week!
       </div>
+
+      <SpiritGallery email={member?.Email} />
     </>
   )
 }
