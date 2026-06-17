@@ -83,11 +83,11 @@ export default function SpiritTab({ member, onToast }) {
 
             {showForm === day.date && (
               <div style={{ margin: '10px 0 0', width: '100%' }}>
-                <div className="info-box" style={{ marginBottom: 8 }}>
+               <div className="info-box" style={{ marginBottom: 8 }}>
                   <i className="ti ti-shield" style={{ verticalAlign: -2, marginRight: 4 }} aria-hidden="true" />
-                  Your +1 entry is awarded after submitting the form below.
+                  Step 1: Open the form and submit your photo. Step 2: Come back here and claim your entry.
                 </div>
-               href={`https://form.jotform.com/${JOTFORM_SPIRIT_ID}?email=${encodeURIComponent(member?.Email || '')}&date=${day.date}&theme=${encodeURIComponent(day.theme)}`}
+              <a href={`https://form.jotform.com/${JOTFORM_SPIRIT_ID}?email=${encodeURIComponent(member?.Email || '')}&date=${day.date}&theme=${encodeURIComponent(day.theme)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{
@@ -98,9 +98,22 @@ export default function SpiritTab({ member, onToast }) {
                 >
                   Open photo submission form ↗
                 </a>
-                <p style={{ fontSize: 12, color: '#5a5a5a', textAlign: 'center', marginTop: 8 }}>
-                  Your entry is awarded automatically when you hit Submit above!
-                </p>
+                <button
+                  onClick={async () => {
+                    await fetch('/api/spirit/submit', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ date: day.date, jotformId: 'manual' }),
+                    })
+                    setSubmittedDates(d => [...d, day.date])
+                    setShowForm(null)
+                    onToast('🎉 Photo submitted! +1 entry earned')
+                  }}
+                  className="btn-primary"
+                  style={{ fontSize: 13 }}
+                >
+                  I submitted my photo — claim entry (+1)
+                </button>
               </div>
             )}
           </div>
