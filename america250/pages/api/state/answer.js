@@ -28,7 +28,7 @@ export default async function handler(req, res) {
     Correct: isCorrect,
   })
 
-  if (isCorrect) await addEntries(session.email, 1)
-
+const isPractice = date < '2026-06-29'
+  if (isCorrect && !isPractice) await addEntries(session.email, 1)
   return res.status(200).json({ correct: isCorrect, correctAnswer: question.correct })
 }
