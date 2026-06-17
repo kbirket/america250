@@ -48,7 +48,7 @@ export default function BracketTab({ member, onToast }) {
     return Math.round((count / totalVotes) * 100)
   }
 
-  const isEventPre = new Date() < new Date('2026-06-29T00:00:00')
+  const isEventPre = false
   const isEventOver = new Date() > new Date('2026-07-04T00:00:00')
 
   if (loading) return <div className="loading">Loading today's matchup...</div>
