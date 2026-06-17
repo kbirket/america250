@@ -14,10 +14,15 @@ export default function AdminPage() {
 
   useEffect(() => { loadData() }, [view, captionDate])
 
-  async function loadData() {
+async function loadData() {
     setLoading(true)
     try {
-      if (view === 'pending' || view === 'approved') {
+      if (view === 'spirit-pending') {
+        const r = await fetch('/api/admin?view=spirit-pending')
+        if (r.status === 403) { setAuthError(true); return }
+        const d = await r.json()
+        setPhotos(d.photos || [])
+      } else if (view === 'pending' || view === 'approved') {
         const r = await fetch(`/api/admin?view=photos-${view}`)
         if (r.status === 403) { setAuthError(true); return }
         const d = await r.json()
@@ -72,9 +77,10 @@ export default function AdminPage() {
     a.href = url; a.download = 'america250-entries.csv'; a.click()
   }
 
-  const TABS = [
+const TABS = [
     { id: 'pending', label: 'Pending Photos' },
     { id: 'approved', label: 'Approved Photos' },
+    { id: 'spirit-pending', label: 'Spirit Photos' },
     { id: 'captions', label: 'Caption Contest' },
     { id: 'entries', label: 'All Entries' },
   ]
@@ -136,7 +142,7 @@ export default function AdminPage() {
                     <div style={{ fontSize: 10, color: '#9a9a9a', marginTop: 2 }}>
                       {photo.MemberEmail} · {new Date(photo.SubmittedAt).toLocaleDateString()}
                     </div>
-                   {view === 'pending' && (
+                   {(view === 'pending' || view === 'spirit-pending') && (
                       <div style={{ marginTop: 10 }}>
                         <input
                           type="url"
