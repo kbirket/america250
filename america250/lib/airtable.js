@@ -172,8 +172,10 @@ export async function getPendingPhotos() {
   return records.map(r => ({ id: r.id, ...r.fields }))
 }
 
-export async function updatePhotoStatus(photoId, status) {
-  await base(Tables.PHOTO_SUBMISSIONS).update(photoId, { Status: status })
+export async function updatePhotoStatus(photoId, status, photoUrl = '') {
+  const fields = { Status: status }
+  if (photoUrl) fields.PhotoURL = photoUrl
+  await base(Tables.PHOTO_SUBMISSIONS).update(photoId, fields)
 }
 
 export async function getMemberPhotoSubmission(email) {
