@@ -14,8 +14,9 @@ export const Tables = {
   PHOTO_VOTES: 'PhotoVotes',
   BRACKET_VOTES: 'BracketVotes',
   STATE_ANSWERS: 'StateAnswers',
-  CAPTION_SUBMISSIONS: 'CaptionSubmissions',
-}
+CAPTION_SUBMISSIONS: 'CaptionSubmissions',
+  SPIRIT_PHOTOS: 'SpiritPhotos',
+  SPIRIT_HEARTS: 'SpiritHearts',}
 
 export default base
 
