@@ -118,7 +118,9 @@ export default function BingoTab({ member, onToast }) {
   const [loading, setLoading] = useState(true)
   const [wins, setWins] = useState([])
   const [blackout, setBlackout] = useState(false)
-  const [saving, setSaving] = useState(false)
+const [saving, setSaving] = useState(false)
+  const [fireworks, setFireworks] = useState(false)
+  const [bigFireworks, setBigFireworks] = useState(false)
   const announceRef = useRef(null)
 
   useEffect(() => {
@@ -170,13 +172,17 @@ export default function BingoTab({ member, onToast }) {
     const result = await r.json()
     setSaving(false)
 
-    if (!hadBingo && hasBingo) {
+if (!hadBingo && hasBingo) {
       announce('Congratulations! You got BINGO! 3 prize entries have been added to your total.')
       onToast('🎉 BINGO! +3 entries earned!')
+      setFireworks(true)
+      setTimeout(() => setFireworks(false), 4000)
     }
     if (!hadBlackout && newBlackout) {
       announce('Amazing! You completed a full blackout! 10 bonus prize entries have been added.')
       onToast('🌟 BLACKOUT! +10 entries earned!')
+      setBigFireworks(true)
+      setTimeout(() => setBigFireworks(false), 7000)
     }
   }
 
@@ -185,9 +191,9 @@ export default function BingoTab({ member, onToast }) {
   const bingoCount = wins.length
   const markedCount = marked.filter(i => i !== 12).length
 
-  return (
+return (
     <>
-      {/* Screen reader live region for announcements */}
+      <Fireworks active={fireworks || bigFireworks} big={bigFireworks} />
       <div
         ref={announceRef}
         aria-live="assertive"
