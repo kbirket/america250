@@ -137,14 +137,25 @@ export default function PhotoTab({ member, email, onToast }) {
             Use the form below to upload your photo. After submitting, click "Claim my entry."
           </div>
 
-          <iframe
-            src={`https://form.jotform.com/${JOTFORM_PHOTO_ID}?email=${encodeURIComponent(email || '')}&category=${encodeURIComponent(category)}`}
-            style={{ width: '100%', height: 400, border: 'none', borderRadius: 8 }}
-            title="Photo Contest Submission"
-          />
-          <p style={{ fontSize: 12, color: '#5a5a5a', textAlign: 'center', marginTop: 8 }}>
-            Your entry is awarded automatically when you hit Submit above!
-          </p>
+          href={`https://form.jotform.com/${JOTFORM_PHOTO_ID}?email=${encodeURIComponent(email || '')}&category=${encodeURIComponent(category)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: 'block', textAlign: 'center', padding: '13px 20px',
+              background: '#B22234', color: 'white', borderRadius: 10,
+              fontSize: 14, fontWeight: 600, marginBottom: 10,
+            }}
+          >
+            Open photo submission form ↗
+          </a>
+          <button
+            className="btn-primary"
+            style={{ fontSize: 13 }}
+            onClick={handlePhotoSubmit}
+            disabled={!hipaaConfirmed || !category || submitting}
+          >
+            {submitting ? 'Submitting...' : 'I submitted my photo — claim entry (+1)'}
+          </button>
         </div>
       )}
 
