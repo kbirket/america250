@@ -42,8 +42,7 @@ export default function StateTab({ member, onToast }) {
     }
   }
 
-  const isEventPre = new Date() < new Date('2026-06-29T00:00:00')
-  const isEventOver = new Date() > new Date('2026-07-04T00:00:00')
+const isEventPre = false  const isEventOver = new Date() > new Date('2026-07-04T00:00:00')
 
   if (loading) return <div className="loading">Loading today's state...</div>
 
