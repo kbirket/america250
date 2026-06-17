@@ -49,9 +49,9 @@ export default function TriviaTab({ member, onToast }) {
     setSubmitting(null)
 
   if (result.correct) {
-      onToast(result.isPractice ? '✓ Correct! (Practice round — no entries yet)' : '✓ Correct! +1 prize entry earned')
+      onToast(result.isPractice ? '✓ Correct! Contest entries start June 29!' : '✓ Correct! +1 prize entry earned')
     } else {
-      onToast('Not quite — keep going!')
+      onToast(result.isPractice ? 'Not quite! Contest entries start June 29!' : 'Not quite — keep going!')
     }
     const updated = await fetch('/api/trivia/today').then(r => r.json())
     setData(updated)
@@ -172,8 +172,8 @@ export default function TriviaTab({ member, onToast }) {
             )
           })}
 
-          <p style={{ fontSize: 11, color: '#9a9a9a', textAlign: 'center', marginTop: 8 }}>
-            New questions every morning · +1 entry per correct answer
+       <p style={{ fontSize: 11, color: '#9a9a9a', textAlign: 'center', marginTop: 8 }}>
+            {today < '2026-06-29' ? 'Practice round · Contest entries start June 29!' : 'New questions every morning · +1 entry per correct answer'}
           </p>
         </>
       )}
