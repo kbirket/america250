@@ -1,6 +1,117 @@
 import { useState, useEffect, useRef } from 'react'
 import { checkBingo } from '../lib/bingo'
 
+function Fireworks({ active, big }) {
+  const canvasRef = useRef(null)
+  const animRef = useRef(null)
+
+  useEffect(() => {
+    if (!active) return
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
+
+    const colors = ['#B22234', '#FFFFFF', '#002868', '#dba51f', '#ff6b6b', '#4fc3f7']
+    const particles = []
+
+    function createBurst(x, y) {
+      const count = big ? 80 : 50
+      for (let i = 0; i < count; i++) {
+        const angle = (Math.PI * 2 * i) / count
+        const speed = big ? (2 + Math.random() * 6) : (1.5 + Math.random() * 4)
+        particles.push({
+          x, y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          alpha: 1,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          size: big ? (2 + Math.random() * 4) : (1.5 + Math.random() * 3),
+          decay: 0.015 + Math.random() * 0.01,
+          gravity: 0.08,
+          trail: [],
+        })
+      }
+    }
+
+    // Create initial bursts
+    const burstCount = big ? 6 : 3
+    for (let i = 0; i < burstCount; i++) {
+      setTimeout(() => {
+        createBurst(
+          canvas.width * (0.2 + Math.random() * 0.6),
+          canvas.height * (0.1 + Math.random() * 0.4),
+        )
+      }, i * (big ? 300 : 400))
+    }
+
+    function animate() {
+      ctx.fillStyle = 'rgba(0,0,0,0.15)'
+      ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+      particles.forEach((p, idx) => {
+        p.trail.push({ x: p.x, y: p.y })
+        if (p.trail.length > 5) p.trail.shift()
+
+        p.x += p.vx
+        p.y += p.vy
+        p.vy += p.gravity
+        p.vx *= 0.98
+        p.alpha -= p.decay
+
+        // Draw trail
+        p.trail.forEach((t, ti) => {
+          ctx.beginPath()
+          ctx.arc(t.x, t.y, p.size * 0.5, 0, Math.PI * 2)
+          ctx.fillStyle = p.color.replace(')', `, ${p.alpha * (ti / p.trail.length) * 0.3})`)
+            .replace('rgb', 'rgba').replace('#', 'rgba(')
+          ctx.fill()
+        })
+
+        // Draw particle
+        ctx.beginPath()
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
+        ctx.fillStyle = p.color
+        ctx.globalAlpha = Math.max(0, p.alpha)
+        ctx.fill()
+        ctx.globalAlpha = 1
+      })
+
+      // Remove dead particles
+      for (let i = particles.length - 1; i >= 0; i--) {
+        if (particles[i].alpha <= 0) particles.splice(i, 1)
+      }
+
+      if (particles.length > 0 || animRef.current) {
+        animRef.current = requestAnimationFrame(animate)
+      }
+    }
+
+    animRef.current = requestAnimationFrame(animate)
+
+    return () => {
+      if (animRef.current) cancelAnimationFrame(animRef.current)
+      animRef.current = null
+    }
+  }, [active, big])
+
+  if (!active) return null
+
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{
+        position: 'fixed',
+        top: 0, left: 0,
+        width: '100vw', height: '100vh',
+        pointerEvents: 'none',
+        zIndex: 9999,
+      }}
+    />
+  )
+}
+
 export default function BingoTab({ member, onToast }) {
   const [squares, setSquares] = useState([])
   const [marked, setMarked] = useState([])
