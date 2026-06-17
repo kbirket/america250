@@ -24,8 +24,9 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Previous question not yet answered.' })
   }
 
-  const correct = answer.toUpperCase() === q.CorrectAnswer
-  await saveAnswer(session.email, questionId, correct, today)
+ const correct = answer.toUpperCase() === q.CorrectAnswer
+  const isPractice = today < '2026-06-29'
+  await saveAnswer(session.email, questionId, correct && !isPractice, today)
 
-  return res.status(200).json({ correct, correctAnswer: q.CorrectAnswer, entryEarned: correct })
+  return res.status(200).json({ correct, correctAnswer: q.CorrectAnswer, entryEarned: correct && !isPractice, isPractice })
 }
