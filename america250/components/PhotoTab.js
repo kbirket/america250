@@ -142,15 +142,9 @@ export default function PhotoTab({ member, email, onToast }) {
             style={{ width: '100%', height: 400, border: 'none', borderRadius: 8 }}
             title="Photo Contest Submission"
           />
-
-          <button
-            className="btn-primary"
-            style={{ marginTop: 10, fontSize: 13 }}
-            onClick={handlePhotoSubmit}
-            disabled={!hipaaConfirmed || !category || submitting}
-          >
-            {submitting ? 'Submitting...' : 'I submitted the form — claim my entry (+1)'}
-          </button>
+          <p style={{ fontSize: 12, color: '#5a5a5a', textAlign: 'center', marginTop: 8 }}>
+            Your entry is awarded automatically when you hit Submit above!
+          </p>
         </div>
       )}
 
