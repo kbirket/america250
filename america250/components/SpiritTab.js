@@ -87,11 +87,17 @@ export default function SpiritTab({ member, onToast }) {
                   <i className="ti ti-shield" style={{ verticalAlign: -2, marginRight: 4 }} aria-hidden="true" />
                   Your +1 entry is awarded after submitting the form below.
                 </div>
-                <iframe
-                  src={`https://form.jotform.com/${JOTFORM_SPIRIT_ID}?email=${encodeURIComponent(member?.Email || '')}&date=${day.date}&theme=${encodeURIComponent(day.theme)}`}
-                  style={{ width: '100%', height: 500, border: 'none', borderRadius: 10 }}
-                  title="Spirit Week Photo Submission"
-                />
+               href={`https://form.jotform.com/${JOTFORM_SPIRIT_ID}?email=${encodeURIComponent(member?.Email || '')}&date=${day.date}&theme=${encodeURIComponent(day.theme)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: 'block', textAlign: 'center', padding: '13px 20px',
+                    background: '#B22234', color: 'white', borderRadius: 10,
+                    fontSize: 14, fontWeight: 600, marginBottom: 10,
+                  }}
+                >
+                  Open photo submission form ↗
+                </a>
                 <p style={{ fontSize: 12, color: '#5a5a5a', textAlign: 'center', marginTop: 8 }}>
                   Your entry is awarded automatically when you hit Submit above!
                 </p>
