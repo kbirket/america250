@@ -92,23 +92,9 @@ export default function SpiritTab({ member, onToast }) {
                   style={{ width: '100%', height: 500, border: 'none', borderRadius: 10 }}
                   title="Spirit Week Photo Submission"
                 />
-                <button
-                  onClick={async () => {
-                    // Mark as submitted (in production, JotForm webhook triggers this)
-                    await fetch('/api/spirit/submit', {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({ date: day.date, jotformId: 'manual' }),
-                    })
-                    setSubmittedDates(d => [...d, day.date])
-                    setShowForm(null)
-                    onToast('🎉 Photo submitted! +1 entry earned')
-                  }}
-                  className="btn-primary"
-                  style={{ marginTop: 8, fontSize: 13 }}
-                >
-                  I submitted the form — claim my entry
-                </button>
+                <p style={{ fontSize: 12, color: '#5a5a5a', textAlign: 'center', marginTop: 8 }}>
+                  Your entry is awarded automatically when you hit Submit above!
+                </p>
               </div>
             )}
           </div>
