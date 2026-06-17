@@ -137,7 +137,7 @@ export default function PhotoTab({ member, email, onToast }) {
             Use the form below to upload your photo. After submitting, click "Claim my entry."
           </div>
 
-          href={`https://form.jotform.com/${JOTFORM_PHOTO_ID}?email=${encodeURIComponent(email || '')}&category=${encodeURIComponent(category)}`}
+          <a href={`https://form.jotform.com/${JOTFORM_PHOTO_ID}?email=${encodeURIComponent(email || '')}&category=${encodeURIComponent(category)}`}
             target="_blank"
             rel="noopener noreferrer"
             style={{
