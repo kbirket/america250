@@ -1,5 +1,5 @@
 import { getSessionFromCookies } from '../../../lib/auth'
-import { getPendingPhotos, getApprovedPhotos, updatePhotoStatus, getLeaderboard } from '../../../lib/airtable'
+import base, { Tables, getPendingPhotos, getApprovedPhotos, updatePhotoStatus, getLeaderboard } from '../../../lib/airtable'
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'info@pattersonhc.org'
 
@@ -16,7 +16,7 @@ export default async function handler(req, res) {
   if (req.method === 'GET') {
     const { view } = req.query
 
-    if (view === 'photos-pending') {
+   if (view === 'photos-pending') {
       const photos = await getPendingPhotos()
       return res.status(200).json({ photos })
     }
@@ -24,6 +24,14 @@ export default async function handler(req, res) {
     if (view === 'photos-approved') {
       const photos = await getApprovedPhotos()
       return res.status(200).json({ photos })
+    }
+
+    if (view === 'spirit-pending') {
+      const records = await base(Tables.SPIRIT_PHOTOS).select({
+        filterByFormula: `{Status} = 'pending'`,
+        sort: [{ field: 'SubmittedAt', direction: 'asc' }],
+      }).firstPage()
+      return res.status(200).json({ photos: records.map(r => ({ id: r.id, ...r.fields })) })
     }
 
     if (view === 'entries') {
