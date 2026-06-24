@@ -189,11 +189,17 @@ export const FUN_FACTS = {
 
 // Bracket matchups — one per day
 export const BRACKET_MATCHUPS = {
-  '2026-06-17': {
+ '2026-06-17': {
     question: 'Greatest Kansas staple?',
     optionA: 'Sunflowers',
     optionB: 'Wheat Fields',
     emoji: { A: '🌻', B: '🌾' },
+  },
+  '2026-06-24': {
+    question: 'Best Kansas summer activity?',
+    optionA: 'County Fair',
+    optionB: 'Watching a Tornado',
+    emoji: { A: '🎡', B: '🌪️' },
   },
   '2026-06-29': {
     question: 'Greatest American summer food?',
@@ -229,12 +235,19 @@ export const BRACKET_MATCHUPS = {
 
 // State quiz — one per day
 export const STATE_QUESTIONS = {
-  '2026-06-17': {
+'2026-06-17': {
     state: 'Kansas',
     hint: 'Home to the geographic center of the contiguous U.S., endless wheat fields, and PHC!',
     options: ['Nebraska', 'Missouri', 'Kansas', 'Oklahoma'],
     correct: 'Kansas',
     funFact: 'Kansas is the Sunflower State and home to Patterson Health Center — serving Harper County since 1910!',
+  },
+  '2026-06-24': {
+    state: 'Oklahoma',
+    hint: 'The Sooner State — PHC\'s neighbor to the south, known for its Native American heritage and wide open plains.',
+    options: ['Kansas', 'Texas', 'Oklahoma', 'Arkansas'],
+    correct: 'Oklahoma',
+    funFact: 'Oklahoma has 39 federally recognized Native American tribes — more than any other state!',
   },
   '2026-06-29': {
     state: 'Kansas',
