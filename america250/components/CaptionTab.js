@@ -9,7 +9,7 @@ export default function CaptionTab({ member, email, onToast }) {
   const [loading, setLoading] = useState(true)
   const [winners, setWinners] = useState({}) // date -> { caption, name }
 
-  const today = new Date().toLocaleDateString('en-CA')
+const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Chicago' }) 
   const contest = CAPTION_CONTESTS[today]
 
   useEffect(() => {
