@@ -320,7 +320,7 @@ export const CAPTION_CONTESTS = {
 
 export const SPIRIT_WEEK = [
  {
-    date: '2026-06-17',
+    date: '2026-06-29',
     day: 'Monday',
     theme: 'Red, White & Blue Day',
     description: 'The classic opener! Wear your patriotic colors — any combination of red, white, and blue counts.',
