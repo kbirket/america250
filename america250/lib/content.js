@@ -288,9 +288,13 @@ export const STATE_QUESTIONS = {
 
 // Caption contest scenarios — one per day
 export const CAPTION_CONTESTS = {
-  '2026-06-17': {
+'2026-06-17': {
     scenario: 'A tumbleweed has rolled through the front entrance of PHC and is now sitting in the waiting room. It has been there for 20 minutes. Nobody has moved it. A patient just asked it if it needs help checking in.',
     closes: '2026-06-17T23:59:00',
+  },
+  '2026-06-24': {
+    scenario: 'Someone has put a tiny American flag in every single Jello cup in the cafeteria. Nobody knows who did it. The Jello cups are now refusing to be eaten out of respect. A patient has asked if the flags are included in the meal plan.',
+    closes: '2026-06-24T23:59:00',
   },
   '2026-06-29': {
     scenario: 'A bald eagle has landed on the roof of the hospital and is staring through the emergency department window with intense suspicion. The ED staff are staring back. Nobody is sure who should make the first move.',
