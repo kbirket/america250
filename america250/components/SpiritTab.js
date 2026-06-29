@@ -1,16 +1,19 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { SPIRIT_WEEK } from '../lib/content'
 import SpiritGallery from './SpiritGallery'
 
+const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
+const UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
+
 export default function SpiritTab({ member, onToast }) {
   const [submittedDates, setSubmittedDates] = useState([])
-  const [showForm, setShowForm] = useState(null) // date string
   const [loading, setLoading] = useState(true)
+  const [uploading, setUploading] = useState(null)
+  const fileInputRefs = useRef({})
 
-  const today = new Date().toLocaleDateString('en-CA')
+  const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Chicago' })
 
   useEffect(() => {
-    // Check which days the member has already submitted
     fetch('/api/spirit/status')
       .then(r => r.json())
       .then(d => {
@@ -28,7 +31,48 @@ export default function SpiritTab({ member, onToast }) {
     return 'today'
   }
 
-  const JOTFORM_SPIRIT_ID = process.env.NEXT_PUBLIC_JOTFORM_SPIRIT_ID || 'YOUR_JOTFORM_ID'
+  async function handleFileSelect(date, file) {
+    if (!file) return
+    setUploading(date)
+
+    try {
+      // Upload to Cloudinary
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('upload_preset', UPLOAD_PRESET)
+      formData.append('folder', 'america250/spirit')
+
+      const cloudRes = await fetch(
+        `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+        { method: 'POST', body: formData }
+      )
+      const cloudData = await cloudRes.json()
+
+      if (!cloudData.secure_url) {
+        onToast('Upload failed — please try again')
+        setUploading(null)
+        return
+      }
+
+      // Save to app
+      const r = await fetch('/api/spirit/upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ date, photoUrl: cloudData.secure_url }),
+      })
+
+      if (r.ok) {
+        setSubmittedDates(d => [...d, date])
+        onToast('🎉 Photo uploaded! +1 entry earned')
+      } else {
+        onToast('Something went wrong — please try again')
+      }
+    } catch {
+      onToast('Upload failed — please try again')
+    }
+
+    setUploading(null)
+  }
 
   if (loading) return <div className="loading">Loading spirit week...</div>
 
@@ -42,9 +86,15 @@ export default function SpiritTab({ member, onToast }) {
         const isToday = status === 'today'
         const isPast = status === 'past'
         const isFuture = status === 'future'
+        const isUploading = uploading === day.date
+
+        // Friday July 3 — open through Sunday July 5
+        const isFridayExtended = day.date === '2026-07-03' && today <= '2026-07-05'
+        const canSubmit = (isToday || isPast || isFridayExtended) && !isFuture && !submitted
 
         return (
-          <div key={day.date} className={`spirit-day${isToday ? ' today' : ''}`} style={{ flexDirection: 'column', alignItems: 'flex-start', gap: 0 }}>
+          <div key={day.date} className={`spirit-day${isToday ? ' today' : ''}`}
+            style={{ flexDirection: 'column', alignItems: 'flex-start', gap: 0 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, width: '100%' }}>
               <div className="spirit-icon">
                 <i className={`ti ${day.icon}`} aria-hidden="true" />
@@ -69,52 +119,35 @@ export default function SpiritTab({ member, onToast }) {
               {day.description}
             </p>
 
-            {(isToday || isPast) && !submitted && !isFuture && (
+            {canSubmit && (
               <div style={{ margin: '10px 0 0 52px' }}>
+                <input
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  ref={el => fileInputRefs.current[day.date] = el}
+                  style={{ display: 'none' }}
+                  onChange={e => handleFileSelect(day.date, e.target.files[0])}
+                />
                 <button
                   className="btn-primary"
                   style={{ fontSize: 13, padding: '9px 16px', width: 'auto' }}
-                  onClick={() => setShowForm(showForm === day.date ? null : day.date)}
+                  onClick={() => fileInputRefs.current[day.date]?.click()}
+                  disabled={isUploading}
                 >
                   <i className="ti ti-camera" style={{ verticalAlign: -2, marginRight: 5 }} aria-hidden="true" />
-                  Submit outfit photo (+1 entry)
+                  {isUploading ? 'Uploading...' : 'Submit outfit photo (+1 entry)'}
                 </button>
+                <p style={{ fontSize: 11, color: '#9a9a9a', marginTop: 6 }}>
+                  No patients or patient spaces in the photo please.
+                </p>
               </div>
             )}
 
-            {showForm === day.date && (
-              <div style={{ margin: '10px 0 0', width: '100%' }}>
-               <div className="info-box" style={{ marginBottom: 8 }}>
-                  <i className="ti ti-shield" style={{ verticalAlign: -2, marginRight: 4 }} aria-hidden="true" />
-                  Step 1: Open the form and submit your photo. Step 2: Come back here and claim your entry.
-                </div>
-              <a href={`https://form.jotform.com/${JOTFORM_SPIRIT_ID}?email=${encodeURIComponent(member?.Email || '')}&date=${day.date}&theme=${encodeURIComponent(day.theme)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    display: 'block', textAlign: 'center', padding: '13px 20px',
-                    background: '#B22234', color: 'white', borderRadius: 10,
-                    fontSize: 14, fontWeight: 600, marginBottom: 10,
-                  }}
-                >
-                  Open photo submission form ↗
-                </a>
-                <button
-                  onClick={async () => {
-                    await fetch('/api/spirit/submit', {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({ date: day.date, jotformId: 'manual' }),
-                    })
-                    setSubmittedDates(d => [...d, day.date])
-                    setShowForm(null)
-                    onToast('🎉 Photo submitted! +1 entry earned')
-                  }}
-                  className="btn-primary"
-                  style={{ fontSize: 13 }}
-                >
-                  I submitted my photo — claim entry (+1)
-                </button>
+            {submitted && (
+              <div style={{ margin: '8px 0 0 52px', fontSize: 12, color: '#2d7a3a' }}>
+                <i className="ti ti-check" style={{ verticalAlign: -2, marginRight: 4 }} aria-hidden="true" />
+                Photo submitted! Pending admin review for the gallery.
               </div>
             )}
           </div>
