@@ -124,7 +124,6 @@ export default function SpiritTab({ member, onToast }) {
                 <input
                   type="file"
                   accept="image/*"
-                  capture="environment"
                   ref={el => fileInputRefs.current[day.date] = el}
                   style={{ display: 'none' }}
                   onChange={e => handleFileSelect(day.date, e.target.files[0])}
