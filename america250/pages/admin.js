@@ -53,8 +53,18 @@ async function loadData() {
     setActionLoading(null)
   }
 
-  async function handlePickWinner(submissionId) {
-    setActionLoading(submissionId)
+async function handleSpiritPhotoAction(photoId, status) {
+    setActionLoading(photoId)
+    await fetch('/api/admin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'update-spirit-photo-status', photoId, status }),
+    })
+    setPhotos(p => p.filter(ph => ph.id !== photoId))
+    setActionLoading(null)
+  }
+
+  async function handlePickWinner(submissionId) {    setActionLoading(submissionId)
     await fetch('/api/admin/caption-winner', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -175,13 +185,13 @@ const TABS = [
                     {view === 'spirit-pending' && (
                       <div style={{ display: 'flex', gap: 6, marginTop: 10 }}>
                         <button
-                          onClick={() => handlePhotoAction(photo.id, 'approved', photo.PhotoURL)}
+                          onClick={() => handleSpiritPhotoAction(photo.id, 'approved')}
                           disabled={actionLoading === photo.id}
                           style={{ flex: 1, padding: '7px', border: 'none', borderRadius: 6, background: '#2d7a3a', color: 'white', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
                           ✓ Approve
                         </button>
                         <button
-                          onClick={() => handlePhotoAction(photo.id, 'rejected', '')}
+                          onClick={() => handleSpiritPhotoAction(photo.id, 'rejected')}
                           disabled={actionLoading === photo.id}
                           style={{ flex: 1, padding: '7px', border: '1px solid #e0e0e0', borderRadius: 6, background: 'white', color: '#a32d2d', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
                           ✗ Reject
