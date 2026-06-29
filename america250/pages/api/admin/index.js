@@ -1,6 +1,5 @@
 import { getSessionFromCookies } from '../../../lib/auth'
-import base, { Tables, getPendingPhotos, getApprovedPhotos, updatePhotoStatus, getLeaderboard } from '../../../lib/airtable'
-
+import base, { Tables, getPendingPhotos, getApprovedPhotos, updatePhotoStatus, updateSpiritPhotoStatus, getLeaderboard } from '../../../lib/airtable'
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'info@pattersonhc.org'
 
 function isAdmin(email) {
@@ -45,11 +44,19 @@ export default async function handler(req, res) {
   if (req.method === 'POST') {
     const { action, photoId, status, photoUrl } = req.body
 
-    if (action === 'update-photo-status') {
+  if (action === 'update-photo-status') {
       if (!photoId || !['approved', 'rejected'].includes(status)) {
         return res.status(400).json({ error: 'Invalid request.' })
       }
       await updatePhotoStatus(photoId, status, photoUrl)
+      return res.status(200).json({ success: true })
+    }
+
+    if (action === 'update-spirit-photo-status') {
+      if (!photoId || !['approved', 'rejected'].includes(status)) {
+        return res.status(400).json({ error: 'Invalid request.' })
+      }
+      await updateSpiritPhotoStatus(photoId, status)
       return res.status(200).json({ success: true })
     }
 
