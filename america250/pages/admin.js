@@ -121,8 +121,8 @@ const TABS = [
 
         {loading && <p style={{ color: '#9a9a9a', fontSize: 14 }}>Loading...</p>}
 
-        {/* Photo queues */}
-        {(view === 'pending' || view === 'approved') && !loading && (
+       {/* Photo queues */}
+        {(view === 'pending' || view === 'approved' || view === 'spirit-pending') && !loading && (
           <>
             {photos.length === 0 && (
               <p style={{ color: '#9a9a9a', fontSize: 14 }}>
@@ -142,11 +142,11 @@ const TABS = [
                     <div style={{ fontSize: 10, color: '#9a9a9a', marginTop: 2 }}>
                       {photo.MemberEmail} · {new Date(photo.SubmittedAt).toLocaleDateString()}
                     </div>
-                   {(view === 'pending' || view === 'spirit-pending') && (
+ {view === 'pending' && (
                       <div style={{ marginTop: 10 }}>
                         <input
                           type="url"
-                          placeholder="Paste JotForm photo URL before approving..."
+                          placeholder="Paste photo URL before approving..."
                           id={`url-${photo.id}`}
                           style={{
                             width: '100%', padding: '7px 10px', border: '1px solid #e0e0e0',
@@ -170,6 +170,22 @@ const TABS = [
                             ✗ Reject
                           </button>
                         </div>
+                      </div>
+                    )}
+                    {view === 'spirit-pending' && (
+                      <div style={{ display: 'flex', gap: 6, marginTop: 10 }}>
+                        <button
+                          onClick={() => handlePhotoAction(photo.id, 'approved', photo.PhotoURL)}
+                          disabled={actionLoading === photo.id}
+                          style={{ flex: 1, padding: '7px', border: 'none', borderRadius: 6, background: '#2d7a3a', color: 'white', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+                          ✓ Approve
+                        </button>
+                        <button
+                          onClick={() => handlePhotoAction(photo.id, 'rejected', '')}
+                          disabled={actionLoading === photo.id}
+                          style={{ flex: 1, padding: '7px', border: '1px solid #e0e0e0', borderRadius: 6, background: 'white', color: '#a32d2d', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+                          ✗ Reject
+                        </button>
                       </div>
                     )}
                   </div>
