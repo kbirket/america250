@@ -179,6 +179,10 @@ export async function updatePhotoStatus(photoId, status, photoUrl = '') {
   await base(Tables.PHOTO_SUBMISSIONS).update(photoId, fields)
 }
 
+export async function updateSpiritPhotoStatus(photoId, status) {
+  await base(Tables.SPIRIT_PHOTOS).update(photoId, { Status: status })
+}
+
 export async function getMemberPhotoSubmission(email) {
   const records = await base(Tables.PHOTO_SUBMISSIONS).select({
     filterByFormula: `{MemberEmail} = '${email}'`,
