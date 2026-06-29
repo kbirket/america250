@@ -43,7 +43,7 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'POST') {
-    const { action, photoId, status } = req.body
+    const { action, photoId, status, photoUrl } = req.body
 
     if (action === 'update-photo-status') {
       if (!photoId || !['approved', 'rejected'].includes(status)) {
