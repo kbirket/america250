@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 const CATEGORIES = ['Patriotic Setup', 'Patriotic Food', 'Patriotic Fun', 'Other']
+const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
+const UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
 
 export default function PhotoTab({ member, email, onToast }) {
   const [photos, setPhotos] = useState([])
@@ -10,10 +12,10 @@ export default function PhotoTab({ member, email, onToast }) {
   const [showSubmit, setShowSubmit] = useState(false)
   const [hipaaConfirmed, setHipaaConfirmed] = useState(false)
   const [category, setCategory] = useState('')
-  const [submitting, setSubmitting] = useState(false)
+  const [uploading, setUploading] = useState(false)
   const [voting, setVoting] = useState(null)
+  const fileInputRef = useRef(null)
 
-  const JOTFORM_PHOTO_ID = process.env.NEXT_PUBLIC_JOTFORM_PHOTO_ID || 'YOUR_PHOTO_JOTFORM_ID'
   const votesRemaining = 3 - myVotes.length
 
   useEffect(() => {
@@ -50,29 +52,47 @@ export default function PhotoTab({ member, email, onToast }) {
     setVoting(null)
   }
 
-  async function handlePhotoSubmit() {
-    if (!hipaaConfirmed || !category) return
-    setSubmitting(true)
-    const r = await fetch('/api/photos', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        action: 'submit',
-        jotformId: 'pending',
-        category,
-        photoUrl: '',
-        hipaaConfirmed,
-      }),
-    })
-    const data = await r.json()
-    if (r.ok) {
-      setMySubmission({ Status: 'pending', Category: category })
-      setShowSubmit(false)
-      onToast('📸 Photo submitted for review! +1 entry earned')
-    } else {
-      onToast(data.error)
+  async function handleFileSelect(file) {
+    if (!file || !hipaaConfirmed || !category) return
+    setUploading(true)
+
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('upload_preset', UPLOAD_PRESET)
+      formData.append('folder', 'america250/contest')
+
+      const cloudRes = await fetch(
+        `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+        { method: 'POST', body: formData }
+      )
+      const cloudData = await cloudRes.json()
+
+      if (!cloudData.secure_url) {
+        onToast('Upload failed — please try again')
+        setUploading(false)
+        return
+      }
+
+      const r = await fetch('/api/photos/upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ category, photoUrl: cloudData.secure_url, hipaaConfirmed }),
+      })
+      const data = await r.json()
+
+      if (r.ok) {
+        setMySubmission({ Status: 'pending', Category: category })
+        setShowSubmit(false)
+        onToast('📸 Photo uploaded! +1 entry earned')
+      } else {
+        onToast(data.error)
+      }
+    } catch {
+      onToast('Upload failed — please try again')
     }
-    setSubmitting(false)
+
+    setUploading(false)
   }
 
   const votingClosed = new Date() > new Date('2026-07-06T12:00:00')
@@ -83,7 +103,6 @@ export default function PhotoTab({ member, email, onToast }) {
     <>
       <div className="section-label">America 250 Photo Contest</div>
 
-      {/* My submission status */}
       {mySubmission ? (
         <div className={mySubmission.Status === 'approved' ? 'success-box' : 'info-box'} style={{ marginBottom: 12 }}>
           <i className={`ti ${mySubmission.Status === 'approved' ? 'ti-check' : 'ti-clock'}`}
@@ -110,7 +129,6 @@ export default function PhotoTab({ member, email, onToast }) {
         </div>
       )}
 
-      {/* Submit form */}
       {showSubmit && !mySubmission && (
         <div className="card" style={{ marginBottom: 12 }}>
           <div style={{ marginBottom: 10 }}>
@@ -133,33 +151,25 @@ export default function PhotoTab({ member, email, onToast }) {
             </label>
           </div>
 
-          <div style={{ fontSize: 12, color: '#5a5a5a', marginBottom: 10 }}>
-            Use the form below to upload your photo. After submitting, click "Claim my entry."
-          </div>
-
-          <a href={`https://form.jotform.com/${JOTFORM_PHOTO_ID}?email=${encodeURIComponent(email || '')}&category=${encodeURIComponent(category)}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: 'block', textAlign: 'center', padding: '13px 20px',
-              background: '#B22234', color: 'white', borderRadius: 10,
-              fontSize: 14, fontWeight: 600, marginBottom: 10,
-            }}
-          >
-            Open photo submission form ↗
-          </a>
+          <input
+            type="file"
+            accept="image/*"
+            ref={fileInputRef}
+            style={{ display: 'none' }}
+            onChange={e => handleFileSelect(e.target.files[0])}
+          />
           <button
             className="btn-primary"
-            style={{ fontSize: 13 }}
-            onClick={handlePhotoSubmit}
-            disabled={!hipaaConfirmed || !category || submitting}
+            style={{ fontSize: 13, marginTop: 10 }}
+            onClick={() => fileInputRef.current?.click()}
+            disabled={!hipaaConfirmed || !category || uploading}
           >
-            {submitting ? 'Submitting...' : 'I submitted my photo — claim entry (+1)'}
+            <i className="ti ti-camera" style={{ verticalAlign: -2, marginRight: 5 }} aria-hidden="true" />
+            {uploading ? 'Uploading...' : 'Choose photo to upload'}
           </button>
         </div>
       )}
 
-      {/* Votes remaining */}
       {!votingClosed && (
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
           <span className="section-label" style={{ margin: 0 }}>Gallery · vote for your favorites</span>
